@@ -147,8 +147,11 @@ open class BarChartDataSet: BarLineScatterCandleBubbleChartDataSet, IBarChartDat
     open var barShadowColor = NSUIColor(red: 215.0/255.0, green: 215.0/255.0, blue: 215.0/255.0, alpha: 1.0)
 
     /// the width used for drawing borders around the bars. If borderWidth == 0, no border will be drawn.
-    open var barBorderWidth : CGFloat = 0.0
+    open var barBorderWidth: CGFloat = 0.0
 
+    /// corners to be rounded
+    open var roundedCorners: UIRectCorner = []
+    
     /// the color drawing borders around the bars.
     open var barBorderColor = NSUIColor.black
 
