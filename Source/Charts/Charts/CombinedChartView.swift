@@ -182,6 +182,13 @@ open class CombinedChartView: BarLineChartViewBase, CombinedChartDataProvider
     /// `true` if drawing shadows (maxvalue) for each bar is enabled, `false` ifnot
     open var isDrawBarShadowEnabled: Bool { return (renderer as! CombinedChartRenderer).drawBarShadowEnabled }
     
+    /// if set to true, a rounded rectangle with the corners is drawn on each bar
+    open var drawRoundedBarEnabled: Bool
+    {
+        get { return (((renderer as! CombinedChartRenderer?)?.drawRoundedBarEnabled) != nil) }
+        set { (renderer as! CombinedChartRenderer?)?.drawRoundedBarEnabled = newValue }
+    }
+    
     /// the order in which the provided data objects should be drawn.
     /// The earlier you place them in the provided array, the further they will be in the background. 
     /// e.g. if you provide [DrawOrder.Bar, DrawOrder.Line], the bars will be drawn behind the lines.
@@ -202,6 +209,9 @@ open class CombinedChartView: BarLineChartViewBase, CombinedChartDataProvider
     
     /// `true` the highlight is be full-bar oriented, `false` ifsingle-value
     open var isHighlightFullBarEnabled: Bool { return highlightFullBarEnabled }
+    
+    /// - returns: `true` if drawing rounded bars is enabled, `false` ifnot
+    open var isDrawRoundedBarEnabled: Bool { return drawRoundedBarEnabled }
     
     // MARK: - ChartViewBase
     

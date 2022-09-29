@@ -1,20 +1,20 @@
 import Foundation
 
-/** This file provides a thin abstraction layer atop of UIKit (iOS, tvOS) and Cocoa (OS X). The two APIs are very much 
+/** This file provides a thin abstraction layer atop of UIKit (iOS, tvOS) and Cocoa (OS X). The two APIs are very much
 alike, and for the chart library's usage of the APIs it is often sufficient to typealias one to the other. The NSUI*
 types are aliased to either their UI* implementation (on iOS) or their NS* implementation (on OS X). */
 #if os(iOS) || os(tvOS)
-	import UIKit
+    import UIKit
 
 
     public typealias ParagraphStyle = NSParagraphStyle
     public typealias MutableParagraphStyle = NSMutableParagraphStyle
     public typealias TextAlignment = NSTextAlignment
-	public typealias NSUIFont = UIFont
-	public typealias NSUIImage = UIImage
-	public typealias NSUIScrollView = UIScrollView
+    public typealias NSUIFont = UIFont
+    public typealias NSUIImage = UIImage
+    public typealias NSUIScrollView = UIScrollView
     public typealias NSUIScreen = UIScreen
-	public typealias NSUIDisplayLink = CADisplayLink
+    public typealias NSUIDisplayLink = CADisplayLink
 
     extension NSUIColor
     {
@@ -65,8 +65,8 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
 #endif
 
 #if os(OSX)
-	import Cocoa
-	import Quartz
+    import Cocoa
+    import Quartz
 
     public typealias ParagraphStyle = NSParagraphStyle
     public typealias MutableParagraphStyle = NSMutableParagraphStyle
@@ -76,8 +76,8 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
     public typealias NSUIScrollView = NSScrollView
     public typealias NSUIScreen = NSScreen
 
-	/** On OS X there is no CADisplayLink. Use a 60 fps timer to render the animations. */
-	public class NSUIDisplayLink
+    /** On OS X there is no CADisplayLink. Use a 60 fps timer to render the animations. */
+    public class NSUIDisplayLink
     {
         private var timer: Timer?
         private var displayLink: CVDisplayLink?
@@ -91,7 +91,7 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
             return _timestamp
         }
 
-		init(target: AnyObject, selector: Selector)
+        init(target: AnyObject, selector: Selector)
         {
             _target = target
             _selector = selector
@@ -113,7 +113,7 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
             {
                 timer = Timer(timeInterval: 1.0 / 60.0, target: target, selector: selector, userInfo: nil, repeats: true)
             }
-		}
+        }
         
         deinit
         {
@@ -130,12 +130,12 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
             {
                 runloop.add(timer!, forMode: mode)
             }
-		}
+        }
 
         open func remove(from: RunLoop, forMode: RunLoop.Mode)
         {
             stop()
-		}
+        }
         
         private func stop()
         {
@@ -148,7 +148,7 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
                 timer?.invalidate()
             }
         }
-	}
+    }
 
     extension NSUIColor
     {
@@ -170,13 +170,13 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
         }
     }
 
-	extension NSView
+    extension NSView
     {
-		final var nsuiGestureRecognizers: [NSGestureRecognizer]?
+        final var nsuiGestureRecognizers: [NSGestureRecognizer]?
         {
-			return self.gestureRecognizers
-		}
-	}
+            return self.gestureRecognizers
+        }
+    }
 
     extension NSScrollView
     {
@@ -187,7 +187,7 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
         }
     }
     
-	open class NSUIView: NSView
+    open class NSUIView: NSView
     {
         /// A private constant to set the accessibility role during initialization.
         /// It ensures parity with the iOS element ordering as well as numbered counts of chart components.
@@ -206,17 +206,17 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
             setAccessibilityRole(role)
         }
 
-		public final override var isFlipped: Bool
+        public final override var isFlipped: Bool
         {
-			return true
-		}
+            return true
+        }
 
-		func setNeedsDisplay()
+        func setNeedsDisplay()
         {
-			self.setNeedsDisplay(self.bounds)
-		}
+            self.setNeedsDisplay(self.bounds)
+        }
 
-		open var backgroundColor: NSUIColor?
+        open var backgroundColor: NSUIColor?
         {
             get
             {
@@ -231,55 +231,103 @@ types are aliased to either their UI* implementation (on iOS) or their NS* imple
             }
         }
 
-		final var nsuiLayer: CALayer?
+        final var nsuiLayer: CALayer?
         {
-			return self.layer
-		}
-	}
+            return self.layer
+        }
+    }
 
-	extension NSFont
+    extension NSFont
     {
-		var lineHeight: CGFloat
+        var lineHeight: CGFloat
         {
-			// Not sure if this is right, but it looks okay
-			return self.boundingRectForFont.size.height
-		}
-	}
+            // Not sure if this is right, but it looks okay
+            return self.boundingRectForFont.size.height
+        }
+    }
 
-	extension NSScreen
+    extension NSScreen
     {
-		final var nsuiScale: CGFloat
+        final var nsuiScale: CGFloat
         {
-			return self.backingScaleFactor
-		}
-	}
+            return self.backingScaleFactor
+        }
+    }
 
-	extension NSImage
+    extension NSImage
     {
-		var cgImage: CGImage?
+        var cgImage: CGImage?
         {
             return self.cgImage(forProposedRect: nil, context: nil, hints: nil)
-		}
-	}
+        }
+    }
 
-	extension NSScrollView
+    extension NSScrollView
     {
-		var scrollEnabled: Bool
+        var scrollEnabled: Bool
         {
-			get
+            get
             {
-				return true
-			}
+                return true
+            }
             set
             {
                 // FIXME: We can't disable  scrolling it on OSX
             }
-		}
+        }
     }
 
-	func NSUIMainScreen() -> NSUIScreen?
+    extension NSBezierPath
     {
-		return NSUIScreen.main
-	}
-    
-#endif
+        var cgPath: CGPath
+        {
+            let mutablePath = CGMutablePath()
+            var points = [CGPoint](repeating: .zero, count: 3)
+            for i in 0 ..< elementCount
+            {
+                let type = element(at: i, associatedPoints: &points)
+                switch type
+                {
+                case .moveToBezierPathElement:
+                    mutablePath.move(
+                        to: CGPoint(
+                            x: points[0].x,
+                            y: points[0].y
+                        )
+                    )
+                case .lineToBezierPathElement:
+                    mutablePath.addLine(
+                        to: CGPoint(
+                            x: points[0].x,
+                            y: points[0].y
+                        )
+                    )
+                case .curveToBezierPathElement:
+                    mutablePath.addCurve(
+                        to: CGPoint(
+                            x: points[2].x,
+                            y: points[2].y
+                        ),
+                        control1: CGPoint(
+                            x: points[0].x,
+                            y: points[0].y
+                        ),
+                        control2: CGPoint(
+                            x: points[1].x,
+                            y: points[1].y
+                        )
+                    )
+                case .closePathBezierPathElement:
+                    mutablePath.closeSubpath()
+                }
+            }
+            return mutablePath
+        }
+    }
+
+    func NSUIMainScreen() -> NSUIScreen?
+    {
+        return NSUIScreen.main
+    }
+
+    #endif
